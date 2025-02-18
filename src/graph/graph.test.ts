@@ -77,6 +77,10 @@ describe('Graph', () => {
 
     expect(operations.length).toBe(12);
 
+    from: Person
+to: Name
+relation type: PROPERTIES
+
     // publish all changes
     // const { proposalId } = await publish({
     //   operations,
