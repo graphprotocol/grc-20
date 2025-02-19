@@ -7,7 +7,7 @@ import { createType } from './create-type.js';
 
 describe('Graph', () => {
   it('creates multiple types, relation types, entities, relations', async () => {
-    const operations: Array<Op> = [];
+    const ops: Array<Op> = [];
 
     // create person type
     const {
@@ -15,20 +15,20 @@ describe('Graph', () => {
       ops: createPersonTypeOps,
       mapping: personMapping,
     } = await createType({
-      attributes: {
-        name: {
-          id: NAME_ATTRIBUTE,
-          type: 'TEXT',
-          name: 'Name',
-        },
+      newAttributes: {
         age: {
-          // ID is optional and will be generated automatically
           type: 'NUMBER',
           name: 'Age',
         },
       },
+      existingAttributes: {
+        name: {
+          id: NAME_ATTRIBUTE,
+          type: 'TEXT',
+        },
+      },
     });
-    operations.push(...createPersonTypeOps);
+    ops.push(...createPersonTypeOps);
 
     // create restaurant type
     const {
@@ -36,15 +36,14 @@ describe('Graph', () => {
       ops: createRestaurantTypeOps,
       mapping: restaurantMapping,
     } = await createType({
-      attributes: {
+      existingAttributes: {
         name: {
           id: NAME_ATTRIBUTE,
           type: 'TEXT',
-          name: 'Name',
         },
       },
     });
-    operations.push(...createRestaurantTypeOps);
+    ops.push(...createRestaurantTypeOps);
 
     // create loves relation type
     const { id: relationTypeId, ops: createRelationTypeOps } = await createRelationType({
@@ -52,7 +51,7 @@ describe('Graph', () => {
       to: restaurantTypeId,
       name: 'Loves',
     });
-    operations.push(...createRelationTypeOps);
+    ops.push(...createRelationTypeOps);
 
     // create restaurant entity
     const { id: restaurantId, ops: createRestaurantOps } = await createEntity({
@@ -62,7 +61,7 @@ describe('Graph', () => {
       },
       mapping: restaurantMapping,
     });
-    operations.push(...createRestaurantOps);
+    ops.push(...createRestaurantOps);
 
     // create person entity
     const { id: personId, ops: createPersonOps } = await createEntity({
@@ -73,9 +72,9 @@ describe('Graph', () => {
       mapping: personMapping,
       relations: [{ relationTypeId, toId: restaurantId }],
     });
-    operations.push(...createPersonOps);
+    ops.push(...createPersonOps);
 
-    expect(operations.length).toBe(12);
+    expect(ops.length).toBe(12);
 
     from: Person
 to: Name
@@ -83,7 +82,7 @@ relation type: PROPERTIES
 
     // publish all changes
     // const { proposalId } = await publish({
-    //   operations,
+    //   ops,
     //   editName: 'Create person, restaurant, and loves relation',
     //   spaceId: '0x1',
     //   accountId: '0x2',

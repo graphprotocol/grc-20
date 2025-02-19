@@ -5,12 +5,10 @@ import { Triple } from '../triple.js';
 import type { CreateRelationOp, Op, SetTripleOp } from '../types.js';
 
 type Params = {
-  from: string;
-  to: string;
   name: string;
 };
 
-export const createRelationType = async ({ from, to, name }: Params) => {
+export const createRelationType = async ({ name }: Params) => {
   const id = generate();
   const ops: Op[] = [];
 
